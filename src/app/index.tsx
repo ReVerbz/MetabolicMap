@@ -1,32 +1,46 @@
-import { StyleSheet, Text, View, ImageBackground } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-export default function index() {
+// Importamos tus componentes y los tipos de datos
+import Navbar from '../components/navbar';
+import MapView from '../components/MapView';
+import DetailView from '../components/detailView';
+import { METABOLIC_DATA } from '../constants/metaData';
+
+export default function Index() {
+  // Estado para guardar la sección activa seleccionada
+  const [selectedSection, setSelectedSection] = useState<typeof METABOLIC_DATA[0] | null>(null);
+
   return (
     <View style={styles.container}>
-      <View style={styles.navbar}>  
-        <Text style={styles.title}> MAPA METABÓLICO </Text>
+      {/* 1. Tu Barra Superior */}
+      <Navbar />
+
+      {/* 2. Contenido Dinámico */}
+      <View style={styles.content}>
+        {!selectedSection ? (
+          // Vista 0: Mapa General
+          <MapView onSelectSection={(section) => setSelectedSection(section)} />
+        ) : (
+          // Vista 1 y 2: Detalle Expandido y Rutas
+          <DetailView
+            section={selectedSection}
+            onBack={() => setSelectedSection(null)}
+          />
+        )}
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    backgroundColor: '#001550',
-    flexDirection: 'column',
-    height: '100%'
+    flex: 1,
+    backgroundColor: '#051031',
+    paddingTop: 40, // Espacio para librar la barra de estado/notch
   },
-  navbar: {
-    backgroundColor: 'black',
-    height: '10%',
-    display: 'flex',
-    justifyContent: 'center',
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
   },
-  title: {
-    fontSize: 20,
-    color: 'white',
-    textAlign: 'center'
-  }
-})
+});
